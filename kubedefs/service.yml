@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: trendstore-service
+  namespace: trendstore
+  labels:
+    app: trendstore
+spec:
+  selector:
+    app: trendstore
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000

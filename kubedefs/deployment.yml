@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trendstore-deployment
+  namespace: trendstore
+  labels:
+    app: trendstore
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: trendstore
+  template:
+    metadata:
+      labels:
+        app: trendstore
+    spec:
+      containers:
+      - name: trendstore
+        image: docker.io/shgupta140/trendify-app:1.0
+        restartPolicy: OnFailure
+        ports:
+        - containerPort: 3000
