@@ -31,13 +31,22 @@ pipeline {
                     color: '#FFFF00'
                 )
 
-                input (
-                    message: "Do you want to deploy manifests on ${CLUSTER_NAME} in region ${AWS_REGION}?",
-                    ok: 'Deploy'
-                    cancel: 'Abort'
-                )
+                try {
+                    input (
+                        message: "Do you want to deploy manifests on ${CLUSTER_NAME} in region ${AWS_REGION}?",
+                        ok: 'Deploy',
+                        cancel: 'Abort'
+                    )
+                } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException interruption) {
+                    def userInterruption = interruption.causes.find {
+                        it instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException.CauseOfInterruption.UserInterruption
+                    }
+                    env.ABORTED_BY = userInterruption?.getUser()?.getDisplayName() ?: 'Unknown user'
+                    throw interruption
+                }
                 echo 'Deploying...'
                 sh 'kubectl apply -k ./kubedefs'
+            }
         }
 
         stage('Checking Deployment Status') {
@@ -65,6 +74,18 @@ pipeline {
                 channel: "${SLACK_NOTIFICATION_CHANNEL}",
                 color: '#FF0000'
             )
+        }
+
+        aborted {
+            script {
+                def approver = env.ABORTED_BY ?: 'Unknown user'
+
+                slackSend(
+                    message: "Deployment aborted by ${approver} on ${CLUSTER_NAME} in region ${AWS_REGION} for job\nJob:${env.JOB_NAME} - Build #${env.BUILD_NUMBER}\nCheck the build details here: ${env.BUILD_URL}",
+                    channel: "${SLACK_NOTIFICATION_CHANNEL}",
+                    color: '#FFA500'
+                )
+            }
         }
     }
 }
