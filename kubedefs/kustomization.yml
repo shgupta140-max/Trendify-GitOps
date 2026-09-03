@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# 1. Enforce the namespace across all resources automatically
+namespace: trendstore
+
+# 2. List all the manifests in the exact order they should be processed
+resources:
+  - 00-namespace.yml
+  - 01-deployment.yml
+  - 02-aws-alb-ingress.yml
+
+# 3. The Image Transformer (Crucial for your CI/CD pipeline)
+images:
+  - name: your-dockerhub-username/trendify-app
+    newTag: latest # This will be overwritten by Jenkins
