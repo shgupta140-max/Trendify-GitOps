@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        CLUSTER_NAME = 'trendify-cluster'
+        CLUSTER_NAME = 'trendstore-cluster'
         AWS_REGION = 'ap-south-1'
         SLACK_NOTIFICATION_CHANNEL = '#trendify-notifications'
         SLACK_APPROVAL_CHANNEL = '#trendify-approvals'
