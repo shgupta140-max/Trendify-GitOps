@@ -6,7 +6,7 @@ metadata:
   labels:
     app: trendstore
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: trendstore
