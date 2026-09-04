@@ -32,9 +32,9 @@ pipeline {
                 )
 
                 input (
-                        message: "Do you want to deploy manifests on ${CLUSTER_NAME} in region ${AWS_REGION}?",
-                        ok: 'Deploy',
-                        cancel: 'Abort'
+                    message: "Do you want to deploy manifests on ${CLUSTER_NAME} in region ${AWS_REGION}?",
+                    ok: 'Deploy',
+                    cancel: 'Abort'
                 )
                 echo 'Deploying...'
                 sh 'kubectl apply -k ./kubedefs'
