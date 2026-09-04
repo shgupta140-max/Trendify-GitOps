@@ -31,19 +31,11 @@ pipeline {
                     color: '#FFFF00'
                 )
 
-                try {
-                    input (
+                input (
                         message: "Do you want to deploy manifests on ${CLUSTER_NAME} in region ${AWS_REGION}?",
                         ok: 'Deploy',
                         cancel: 'Abort'
-                    )
-                } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException interruption) {
-                    def userInterruption = interruption.causes.find {
-                        it.class.simpleName == 'UserInterruption'
-                    }
-                    env.ABORTED_BY = userInterruption?.getUser()?.getDisplayName() ?: 'Unknown user'
-                    throw interruption
-                }
+                )
                 echo 'Deploying...'
                 sh 'kubectl apply -k ./kubedefs'
             }
