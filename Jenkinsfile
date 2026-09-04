@@ -39,7 +39,7 @@ pipeline {
                     )
                 } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException interruption) {
                     def userInterruption = interruption.causes.find {
-                        it instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException.CauseOfInterruption.UserInterruption
+                        it.class.simpleName == 'UserInterruption'
                     }
                     env.ABORTED_BY = userInterruption?.getUser()?.getDisplayName() ?: 'Unknown user'
                     throw interruption
