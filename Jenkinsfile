@@ -44,9 +44,9 @@ pipeline {
         stage('Checking Deployment Status') {
             steps {
                 echo 'Checking deployment status...'
-                sh 'kubectl rollout status deployment trendstore-deployment'
+                sh 'kubectl rollout status deployment trendstore-deployment -n trendstore'
                 echo 'Checking Pod status...'
-                sh 'kubectl get pods -n monitoring -o wide'
+                sh 'kubectl get pods -n trendstore -o wide'
             }
         }
     }
