@@ -17,6 +17,7 @@ spec:
     spec:
       containers:
       - name: trendstore
-        image: docker.io/shgupta140/trendify-app:1.0
+        image: docker.io/shgupta140/trendify-app:v3
+        restartPolicy: OnFailure
         ports:
         - containerPort: 3000
