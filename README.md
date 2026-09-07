@@ -2,6 +2,27 @@
 
 Kubernetes deployment configuration for **TrendStore**, the Trendify web application. This repository is the deployment layer in the Trendify delivery workflow: application artifacts are built elsewhere, AWS infrastructure is provisioned separately, and Jenkins applies the versioned Kubernetes manifests to Amazon EKS.
 
+
+## 🌐 Trendify Project Ecosystem
+
+This repository is part of the **Trendify Enterprise Cloud Platform**, a fully automated, GitOps-driven, two-tier application stack. To enforce a strict separation of concerns, the architecture is decoupled into four distinct repositories:
+
+1. **[Trendify-Platform](https://github.com/shgupta140-max/trendify-platform.git) (Automation & Observability):**
+   * **Role:** The foundational layer. Contains Terraform code to provision the Jenkins CI/CD automation server and Helm configurations to deploy the centralized monitoring stack (`kube-prometheus-stack` & `blackbox-exporter`).
+
+2. **[Trendify-Infra]( https://github.com/shgupta140-max/Trendify-Infra.git) (Cloud Infrastructure):**
+   * **Role:** The immutable AWS infrastructure layer. Contains Terraform modules to provision the production-grade Amazon EKS cluster (`trendstore-cluster` in `ap-south-1`), VPC networks, IAM Access Entries, and the AWS ALB Controller.
+
+3. **[Trendify-App](https://github.com/shgupta140-max/Trendify-App.git) (Application Code & CI):**
+   * **Role:** The product layer. Houses the Node.js application source code, Dockerfile, and the Continuous Integration (CI) Jenkins pipeline. 
+   * **Connection:** This pipeline builds the image, pushes it to DockerHub, and automatically commits the new image tag directly into the `Trendify-GitOps` repository.
+
+4. **[Trendify-GitOps](https://github.com/shgupta140-max/Trendify-GitOps.git) (Cluster State & CD):**
+   * **Role:** The single source of truth for the Kubernetes cluster state. Contains the application deployment manifests and Kustomize overlays.
+   * **Connection:** Triggered by commits from `Trendify-App`, this Jenkins pipeline requires manual Slack approval before deploying changes to the `Trendify-Infra` EKS cluster and dynamically injecting the AWS ALB URL into the monitoring probes.
+
+---
+
 ## Repository Responsibilities
 
 This repository contains:
@@ -14,14 +35,6 @@ This repository contains:
 
 Application source code and AWS infrastructure are intentionally maintained in separate repositories.
 
-## Connected Repositories
-
-| Repository | Role |
-| --- | --- |
-| [Trendify-App](https://github.com/shgupta140-max/Trendify-App) | Application repository for the HCL GUVI Trend Website project. Its production build is packaged into the Docker image deployed by this repository. |
-| [Trendify-Infra](https://github.com/shgupta140-max/Trendify-Infra) | Terraform infrastructure for AWS networking, VPC, EKS, worker nodes, IAM access, and S3 remote state. It provides the `trendstore-cluster` used by this deployment. |
-| [trendify-platform](https://github.com/shgupta140-max/trendify-platform) | Platform and Jenkins-oriented project repository that provides the wider CI/CD context around the Trendify application. |
-| [Trendify-GitOps](https://github.com/shgupta140-max/Trendify-GitOps) | This repository. It owns Kubernetes manifests and the Jenkins deployment pipeline. |
 
 ## Deployment Architecture
 
@@ -33,9 +46,9 @@ Docker image: docker.io/shgupta140/trendify-app:<tag>
 	|
 	v
 Trendify-GitOps -- Jenkins approval --> Amazon EKS: trendstore-cluster
-							    |
-							    v
-				 ALB --> trendstore-service --> trendstore pods
+	|
+	v
+ALB --> trendstore-service --> trendstore pods
 ```
 
 ## Current Deployment Configuration
