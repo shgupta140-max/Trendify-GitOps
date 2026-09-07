@@ -7,7 +7,7 @@ Kubernetes deployment configuration for **TrendStore**, the Trendify web applica
 
 This repository is part of the **Trendify Enterprise Cloud Platform**, a fully automated, GitOps-driven, two-tier application stack. To enforce a strict separation of concerns, the architecture is decoupled into four distinct repositories:
 
-1. **[Trendify-Platform](https://github.com/shgupta140-max/trendify-platform.git) (Automation & Observability):**
+1. **[Trendify-Platform](https://github.com/shgupta140-max/Trendify-Platform.git) (Automation & Observability):**
    * **Role:** The foundational layer. Contains Terraform code to provision the Jenkins CI/CD automation server and Helm configurations to deploy the centralized monitoring stack (`kube-prometheus-stack` & `blackbox-exporter`).
 
 2. **[Trendify-Infra]( https://github.com/shgupta140-max/Trendify-Infra.git) (Cloud Infrastructure):**
